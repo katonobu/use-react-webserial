@@ -53,46 +53,61 @@ const webSerialIo = (()=>{
         };
             
         // type openPort = (port: SerialPort, options: SerialOptions) => Promise<void>;
-        const openPort = async (port_arg, options) => {
-            //        console.log('openPort is called');
+        const openPort = async (requestPortFilters, openOptions) => {
+            // requestPortFilters may like this [{usbVendorId:0x2341, usbProductId:0x8054}]
+            // default value, [] accepts all vid/pid.
+            const filters = requestPortFilters?requestPortFilters:[]; 
             try{
-                await port_arg.open(options);
-                port = port_arg;
-                _onOpen();
-            } catch (e) {
-                _onError(e);
-                markDisconnected();
-                return;
-            }
+                let tmpPort = await navigator.serial.requestPort({
+                    filters: filters
+                });
+                const options = openOptions?openOptions:{
+                    baudRate:115200,
+                    dataBits:8,
+                    stopBits:1,
+                    parity:"none",
+                    bufferSize:255,
+                    flowControl:"none"
+                }
+                try{
+                    await tmpPort.open(options);
+                    port = tmpPort;
+                    _onOpen();
             
-            while (port?.readable) {
-                try {
-                    reader = port.readable.getReader()
-                    for (;;) {
-    //                    console.log('before reader.current.read()');
-                        const {value, done} = await reader.read();
-    //                    console.log('return from reader.current.read()');
-                        if (value) {
-                            _onMessage(value);
-                        }
-                        if (done) {
+                    while (port?.readable) {
+                        try {
+                            reader = port.readable.getReader()
+                            for (;;) {
+            //                    console.log('before reader.current.read()');
+                                const {value, done} = await reader.read();
+            //                    console.log('return from reader.current.read()');
+                                if (value) {
+                                    _onMessage(value);
+                                } 
+                                if (done) {
+                                    break;
+                                }
+                            }
+                            reader.releaseLock();
+                            reader = undefined;
+                        } catch (e) {
+                            _onError(e);
                             break;
                         }
                     }
-                    reader.releaseLock();
-                    reader = undefined;
-                } catch (e) {
-                    _onError(e);
-                    break;
-                }
-            }
-            if (port) {
-                try {
-                    await port.close();
-                } catch (e) {
+                    if (port) {
+                        try {
+                            await port.close();
+                            markDisconnected();
+                        } catch (e) {
+                            _onError(e);
+                        }
+                    }
+                } catch(e){
                     _onError(e);
                 }
-                markDisconnected();
+            } catch (e) {
+                _onError(e);
             }
         };
 
@@ -107,11 +122,11 @@ const webSerialIo = (()=>{
             if (localPort) {
                 try {
                     await localPort.close();
+                    markDisconnected();        
                 } catch (e) {
                     _onError(e);
                 }
             }
-            markDisconnected();        
         };
 
         // type sendMessage(message: Uint8Array) => void;

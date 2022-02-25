@@ -23,62 +23,11 @@
 import React, {useCallback, useState, useEffect} from 'react'
 
 import { useWebSerial } from 'use-react-webserial'
+import WebSerialButtons from './WebSerialButtons'
 
 import loadable from '@loadable/component'
 const Xterm = loadable(() => import('./xterm.js'));
 
-const OpenCloseButton = ({
-    serialAvailable,
-    isConnected,
-    openPort,
-    closePort,
-    onError,
-    requestPortFilters,
-    openOptions
-}) => {
-    return (
-        <button 
-        disabled={!serialAvailable}       
-        onClick={
-            async ()=>{
-                if (isConnected) {
-                    try{
-                        await closePort();
-                    } catch (e) {
-                        onError(e);
-                    }
-                } else {
-                    try {
-                        // requestPortFilters may like this [{usbVendorId:0x2341, usbProductId:0x8054}]
-                        // default value, [] accepts all vid/pid.
-                        const filters = requestPortFilters?requestPortFilters:[]; 
-                        let tmpPort = await navigator.serial.requestPort({
-                            filters: filters 
-                        });
-                        try{
-                            const options = openOptions?openOptions:{
-                                baudRate:115200,
-                                dataBits:8,
-                                stopBits:1,
-                                parity:"none",
-                                bufferSize:255,
-                                flowControl:"none"
-                            }
-                            openPort(tmpPort, options);
-                        } catch (e) {
-                            // for example, "NetworkError: Failed to open serial port." if specified port is already used.
-                            onError(e);
-                        }
-                    } catch (e) {
-                        // for example, "NotFoundError: No port selected by the user." if user select cancel.
-                        onError(e);
-                    }        
-                }
-            }
-        }
-        >{isConnected?"CLOSE":"OPEN"}</button>
-    );
-}
 
 const WebSerialTerminal = () => {
     const {openPort,closePort,sendMessage,updateCallbacks} = useWebSerial();
@@ -94,16 +43,17 @@ const WebSerialTerminal = () => {
                 setIsConnected(true);
                 const encoder = new TextEncoder();
             
-                sendMessage(encoder.encode("< TEST RSP 1000\r\n"));
+                sendMessage(encoder.encode("< TEST EVT 0,100,10\r\n"));
             },
             onClose:()=>{
                 console.log("onClose()");
                 setIsConnected(false);
             },
             onMessage:(msg)=>{
-                console.log(msg);
                 const decoder = new TextDecoder();
-                setTerminalMessage(decoder.decode(msg));
+                const decoded = decoder.decode(msg)
+                console.log(decoded);
+                setTerminalMessage((new Date()).toLocaleString() + ":" + decoded);
             },
             onError:onError
         });
@@ -114,26 +64,26 @@ const WebSerialTerminal = () => {
     useEffect(()=>{
         setTerminalMessage("Start at " + (new Date()).toLocaleString());
         return ()=>{
-            setTerminalMessage("End at " + (new Date()).toLocaleString());
+            setTerminalMessage("End at " + (new Date()).toLocaleString()); // this may mot displaied.
         }
     },[]);
 
     return (
     <>
-        <Xterm
-            message = {terminalMessage}
-        />
-        <OpenCloseButton
+        <WebSerialButtons
             serialAvailable = {serialAvailable}
             isConnected = {isConnected}
             openPort = {openPort}
             closePort = {closePort}
             onError = {onError}
-            requestPortFilters = {[]}
+            sendMessage = {sendMessage}
+        >
+        </WebSerialButtons>
+        <Xterm
+            message = {terminalMessage}
         />
     </>    
   )
-  
 }
 
 export default WebSerialTerminal;
