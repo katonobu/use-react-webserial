@@ -20,6 +20,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-export { default as useWebSerial } from './useWebSerial';
-export { default as WebSerialProvider } from './WebSerialProvider';
-export { default as WebSerialContext } from './WebSerialContext';
+import React from 'react'
+import webSerialIo from './webSerialIo';
+import WebSerialContext from './WebSerialContext';
+
+const {openPort,closePort,sendMessage,updateCallbacks} = webSerialIo();
+
+const WebSerialProvider = ({
+    children,
+    options = { },
+    parserMethod
+  }) => {
+    return (
+        <WebSerialContext.Provider value = {{openPort, closePort, sendMessage, parserMethod, updateCallbacks}}>
+            {children}
+        </WebSerialContext.Provider>
+    )
+}
+export default WebSerialProvider;
