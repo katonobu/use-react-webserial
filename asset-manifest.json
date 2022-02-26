@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/use-react-webserial/static/css/main.42cc8b22.chunk.css",
+    "main.js": "/use-react-webserial/static/js/main.33afb481.chunk.js",
+    "main.js.map": "/use-react-webserial/static/js/main.33afb481.chunk.js.map",
+    "runtime-main.js": "/use-react-webserial/static/js/runtime-main.17602412.js",
+    "runtime-main.js.map": "/use-react-webserial/static/js/runtime-main.17602412.js.map",
+    "static/js/2.8705521b.chunk.js": "/use-react-webserial/static/js/2.8705521b.chunk.js",
+    "static/js/2.8705521b.chunk.js.map": "/use-react-webserial/static/js/2.8705521b.chunk.js.map",
+    "static/js/3.996ea8da.chunk.js": "/use-react-webserial/static/js/3.996ea8da.chunk.js",
+    "static/js/3.996ea8da.chunk.js.map": "/use-react-webserial/static/js/3.996ea8da.chunk.js.map",
+    "static/js/4.20b03f96.chunk.js": "/use-react-webserial/static/js/4.20b03f96.chunk.js",
+    "static/js/4.20b03f96.chunk.js.map": "/use-react-webserial/static/js/4.20b03f96.chunk.js.map",
+    "index.html": "/use-react-webserial/index.html",
+    "precache-manifest.c02a0a2e7e17c33380d18a0a12e87d61.js": "/use-react-webserial/precache-manifest.c02a0a2e7e17c33380d18a0a12e87d61.js",
+    "service-worker.js": "/use-react-webserial/service-worker.js",
+    "static/css/main.42cc8b22.chunk.css.map": "/use-react-webserial/static/css/main.42cc8b22.chunk.css.map",
+    "static/js/2.8705521b.chunk.js.LICENSE.txt": "/use-react-webserial/static/js/2.8705521b.chunk.js.LICENSE.txt",
+    "static/js/4.20b03f96.chunk.js.LICENSE.txt": "/use-react-webserial/static/js/4.20b03f96.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.17602412.js",
+    "static/js/2.8705521b.chunk.js",
+    "static/css/main.42cc8b22.chunk.css",
+    "static/js/main.33afb481.chunk.js"
+  ]
+}
