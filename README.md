@@ -20,12 +20,12 @@ Example useage of WebSerialProvider component:
 ```jsx
 import React from 'react'
 import { WebSerialProvider } from 'use-react-webserial'
-import WebSerialTerminal from './WebSerialTerminal'
+import WebSerialExample from './WebSerialExample'
 
 const App = () => {
   return (
     <WebSerialProvider>
-      <WebSerialTerminal/>
+      <WebSerialExample/>
     </WebSerialProvider>
   )
 }
@@ -34,7 +34,7 @@ const App = () => {
 ### useWebSerial Hook
 
 useWebSerial is hook as consumer of WebSerialProvider.
-This returns 4 objects.
+This returns a object including 4 functions.
 - openPort(requestPortFilters, options)
   - A function to open serial port.
   - `requestPortFilters` is used for [Serial.requestPort()](https://developer.mozilla.org/en-US/docs/Web/API/Serial/requestPort)
@@ -77,14 +77,13 @@ This returns 4 objects.
     - `error` is Error object.
     - Return value is ignored.
 
-Consume the WebSerialProvider, set callbacks, propagete functions to child components.
+Example useage of useWebSerial.
+Consume the WebSerialProvider, set callbacks, use as functions in button components:
 ```jsx
 import React, {useState, useEffect} from 'react'
-
 import { useWebSerial } from 'use-react-webserial'
-import WebSerialButtons from './WebSerialButtons'
 
-const WebSerialTerminal = () => {
+const WebSerialExample = () => {
     const {openPort,closePort,sendMessage,updateCallbacks} = useWebSerial();
     const [isConnected, setIsConnected] = useState(false);
     useEffect(()=>{
@@ -110,68 +109,39 @@ const WebSerialTerminal = () => {
 
     return (
     <>
-        <WebSerialButtons
-            isConnected = {isConnected}
-            openPort = {openPort}
-            closePort = {closePort}
-            sendMessage = {sendMessage}
-        >
-        </WebSerialButtons>
+      <button>
+          onClick={
+            ()=>{
+                if (isConnected) {
+                    closePort();
+                } else {
+                    openPort(
+                      // [{usbVendorId:0x1234, usbProductId:0x5678}]
+                      [],
+                      {
+                        baudRate: 9600,
+                      }
+                    );
+                }
+            }
+          }
+      >{isConnected?"CLOSE":"OPEN"}</button>
+      <button
+          disabled = {!isConnected}
+          onClick={
+            ()=>{
+                sendMessage((new TextEncoder()).encode("Hellow World\r\n"))
+            }
+          }
+      >SEND</button>
     </>    
   )
-}
-```
-Use functions provided WebSerialProvider.
-```jsx
-import React from 'react'
-
-const WebSerialButtons = ({
-    isConnected,
-    openPort,
-    closePort,
-    sendMessage,
-})=>{
-    return (
-        <>
-        <button>
-            onClick={
-              ()=>{
-                  if (isConnected) {
-                      closePort();
-                  } else {
-                      openPort();
-                  }
-              }
-            }
-        >{isConnected?"CLOSE":"OPEN"}</button>
-        <button
-            disabled = {!isConnected}
-            onClick={
-              ()=>{
-                  sendMessage((new TextEncoder()).encode("Hellow World\r\n"))
-              }
-            }
-        >SEND</button>
-        </>        
-    );
 }
 ```
 
 ### limitation
 The function openPort() must be called with user activation.
-
 This limitation comes from specification of [Web Serial API](https://wicg.github.io/serial/#security)
-
-
-## For developper
-1. checkout this repo.
-1. `cd use-react-webserial`
-1. `npm install`
-1. `npm start`
-1. `cd use-react-webserial/example` in new terminal
-1. `npm install`
-1. `npm start`
-1. example app wil run.
 
 ## Credits
 - Thanks to everyone who made Web Serial API for enabling this project to be possible.

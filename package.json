@@ -1,6 +1,6 @@
 {
   "name": "use-react-webserial",
-  "version": "1.0.0",
+  "version": "0.0.5",
   "description": "React Hook designed to provide WebSerial integrations to your React Components.",
   "author": "katonobu",
   "license": "MIT",
