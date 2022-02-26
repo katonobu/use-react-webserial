@@ -1,7 +1,19 @@
-import { ExampleComponent } from '.'
+import { WebSerialContext, WebSerialProvider, useWebSerial } from '.'
 
-describe('ExampleComponent', () => {
+describe('WebSerialContext', () => {
   it('is truthy', () => {
-    expect(ExampleComponent).toBeTruthy()
+    expect(WebSerialContext).toBeTruthy()
+  })
+})
+
+describe('WebSerialProvider', () => {
+  it('is truthy', () => {
+    expect(WebSerialProvider).toBeTruthy()
+  })
+})
+
+describe('useWebSerial', () => {
+  it('is truthy', () => {
+    expect(useWebSerial).toBeTruthy()
   })
 })

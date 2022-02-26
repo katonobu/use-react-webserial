@@ -21,10 +21,7 @@
 // SOFTWARE.
 
 import React from 'react'
-
 import { WebSerialProvider } from 'use-react-webserial'
-import 'use-react-webserial/dist/index.css'
-
 import WebSerialTerminal from './WebSerialTerminal'
 
 const App = () => {
